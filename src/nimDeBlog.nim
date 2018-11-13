@@ -3,14 +3,6 @@ import packages/docutils/rst, packages/docutils/rstgen
 import ../../compiler/pathutils
 import nimDeBlogArticle, localize
 
-type
-  Directory = AbsoluteDir | RelativeDir
-  File      = AbsoluteFile | RelativeFile
-
-proc toAbsolute(dir: Directory): AbsoluteDir =
-  toAbsolute(dir.string, getCurrentDir().AbsoluteDir).AbsoluteDir
-proc toAbsolute(file: File): AbsoluteFile =
-  toAbsolute(file.string, getCurrentDir().AbsoluteDir)
 proc toAbsoluteDir(dir: string): AbsoluteDir =
   toAbsolute(dir, getCurrentDir().AbsoluteDir).AbsoluteDir
 
