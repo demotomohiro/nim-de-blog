@@ -1,4 +1,4 @@
-import marshal, os, osproc, ospaths, strutils, strformat, tables
+import marshal, os, osproc, strutils, strformat, tables
 import packages/docutils/rst, packages/docutils/rstgen
 import ../../compiler/pathutils
 import nimDeBlogArticle, localize
