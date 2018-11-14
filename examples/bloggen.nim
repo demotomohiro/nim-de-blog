@@ -4,8 +4,7 @@ import nimDeBlog, localize
 proc main =
   let articlesInfo = execArticles("testArticles", "public", "bin")
 
-  for l in [Lang"ja", Lang"en"]:
-    let rstSrc = localize("""
+  let rstSrcHead = """
 Nim De Blog
 ======
 【
@@ -13,27 +12,25 @@ Nim De Blog
 【en:Artile list】
 】
 ------
-""", l)
+"""
 
-    let rstSrcFoot = """
+  let rstSrcFoot = """
 Footer of index page
 """
 
-    let html = makeIndexPage(
+  let html = makeIndexPages(
                             articlesInfo,
-                            l,
-                            localize("""【
-                                        【ja:Nim De Blog サンプル】
-                                        【en:Nim De Blog sample】
-                                        】""", l),
-                            localize("""【
-                                        【ja:Nim De BlogはNim言語を使った静的サイトジェネレータです。】
-                                        【en:Nim De Blog is a static site generater that uses Nim programming language.】
-                                        】""", l),
-                            rstSrc,
+                            """【
+                               【ja:Nim De Blog サンプル】
+                               【en:Nim De Blog sample】
+                               】""",
+                            """【
+                               【ja:Nim De BlogはNim言語を使った静的サイトジェネレータです。】
+                               【en:Nim De Blog is a static site generater that uses Nim programming language.】
+                               】""",
+                            rstSrcHead,
                             rstSrcFoot,
                             "public")
-    writeFile("public" / fmt"index.{l}.html", html)
 
 when isMainModule:
   main()

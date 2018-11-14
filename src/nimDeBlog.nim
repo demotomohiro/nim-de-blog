@@ -1,4 +1,4 @@
-import marshal, os, osproc, strutils, strformat, tables
+import marshal, os, osproc, sets, strutils, strformat, tables
 import packages/docutils/rst, packages/docutils/rstgen
 import ../../compiler/pathutils
 import nimDeBlogArticle, localize
@@ -66,4 +66,25 @@ proc makeIndexPage*(
   result.add "<body>\n"
   result.add makeIndex(articlesInfo, lang, preIndex, postIndex, absIndexDir)
   result.add "</body></html>"
+
+proc makeIndexPages*(
+                    articlesInfo: openArray[ArticleInfo];
+                    title, description, preIndex, postIndex: string;
+                    indexDir: string): string =
+  var langSet: HashSet[Lang]
+  langSet.init(2)
+  for a in articlesInfo:
+    for l in a.keys:
+      langSet.incl l
+
+  for l in langSet:
+    let html = makeIndexPage(
+                            articlesInfo,
+                            l,
+                            localize(title, l),
+                            localize(description, l),
+                            localize(preIndex, l),
+                            localize(postIndex, l),
+                            indexDir)
+    writeFile(indexDir / fmt"index.{l}.html", html)
 
