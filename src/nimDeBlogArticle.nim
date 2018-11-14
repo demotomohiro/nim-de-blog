@@ -46,6 +46,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
   assert path.len != 0
   createDir(parentDir(path))
   let articleInfo = initArticleInfo()
+  let filename = extractFilename(path)
   for lang, a in articleSrc.pairs:
     var gen: RstGenerator
     let basePath = path & "." & $lang
@@ -57,6 +58,10 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
 
     var html = getHtmlHead(lang, a.title, a.description)
     html.add "<body>\n"
+    for l in articleSrc.keys:
+      if l == lang:
+        continue
+      html.add &"<a href=\"{filename}.{l}.html\">{l}</a> "
     renderRstToOut(gen, rstNode, html)
     html.add "</body>"
 
