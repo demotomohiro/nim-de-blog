@@ -1,4 +1,4 @@
-import pegs, strformat, strutils, hashes
+import pegs, strformat, strutils, hashes, tables
 
 type
   Lang*         = distinct string
@@ -6,6 +6,17 @@ type
 proc hash*(x: Lang): Hash {.borrow.}
 proc `==`*(x, y: Lang): bool {.borrow.}
 proc `$`*(x: Lang): string {.borrow.}
+
+#ISO 639-1 code to native language name.
+#Check https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+const langToNativeName* = {
+                          Lang"zh": "中文",
+                          Lang"en": "English",
+                          Lang"fr": "français",
+                          Lang"de": "Deutsch",
+                          Lang"ja": "日本語",
+                          Lang"ru": "русский",
+                          Lang"es": "Español"}.toTable
 
 proc filterLang(source: string; lang: string): string =
   let removePeg = peg(fmt("""
