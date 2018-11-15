@@ -60,10 +60,12 @@ proc makeIndexPage*(
                     articlesInfo: openArray[ArticleInfo];
                     lang: Lang;
                     title, description, preIndex, postIndex: string;
+                    transLinks: string;
                     indexDir: string): string =
   let absIndexDir = toAbsoluteDir(indexDir)
   result = getHtmlHead(lang, title, description)
   result.add "<body>\n"
+  result.add transLinks
   result.add makeIndex(articlesInfo, lang, preIndex, postIndex, absIndexDir)
   result.add "</body></html>"
 
@@ -78,6 +80,13 @@ proc makeIndexPages*(
       langSet.incl l
 
   for l in langSet:
+    var transLinks = "\n"
+    for ll in langSet:
+      if l == ll:
+        continue
+      transLinks.add &"<a href=\"index.{ll}.html\">{langToNativeName[ll]}</a> "
+    transLinks.add '\n'
+
     let html = makeIndexPage(
                             articlesInfo,
                             l,
@@ -85,6 +94,7 @@ proc makeIndexPages*(
                             localize(description, l),
                             localize(preIndex, l),
                             localize(postIndex, l),
+                            transLinks,
                             indexDir)
     writeFile(indexDir / fmt"index.{l}.html", html)
 
