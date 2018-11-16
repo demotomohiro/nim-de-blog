@@ -2,7 +2,13 @@ import os, strformat
 import nimDeBlog, localize
 
 proc main =
-  let articlesInfo = execArticles("testArticles", "public", "bin")
+  let articleHead = """
+【
+【ja:Nim De Blogのサンプル記事】
+【en:Nim De Blog sample article】
+】
+"""
+  let articlesInfo = execArticles("testArticles", "public", "bin", articleHead)
 
   let rstSrcHead = """
 Nim De Blog

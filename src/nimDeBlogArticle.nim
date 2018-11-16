@@ -39,9 +39,11 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     echo "Empty article"
     return
   var path: string
+  var header: string
   for kind, key, val in getopt():
     case key
     of "o": path = val
+    of "header": header = val
     else: assert(false)
   assert path.len != 0
   createDir(parentDir(path))
@@ -52,7 +54,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     let basePath = path & "." & $lang
     initRstGenerator(gen, outHtml, defaultConfig(), basePath & ".rst", {})
 
-    let rstTextLocal = localize(rstText, lang)
+    let rstTextLocal = localize(header & "\n\n" & rstText, lang)
     var hasToc:bool
     let rstNode = rstParse(rstTextLocal, "", 1, 1, hasToc, {})
 

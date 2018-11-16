@@ -6,7 +6,7 @@ import nimDeBlogArticle, localize
 proc toAbsoluteDir(dir: string): AbsoluteDir =
   toAbsolute(dir, getCurrentDir().AbsoluteDir).AbsoluteDir
 
-proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir: string): ArticlesInfo =
+proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header: string): ArticlesInfo =
   result = @[]
   let absArticlesSrcDir = toAbsoluteDir(articlesSrcDir)
   let absArticlesDstDir = toAbsoluteDir(articlesDstDir)
@@ -27,7 +27,7 @@ proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir: string): Articles
       quit "Fix error!"
 
     let outPath = absArticlesDstDir / outPathRel
-    let outp = execProcess(command = string(exePath), args = ["-o=" & string(outPath)], options = {poEchoCmd})
+    let outp = execProcess(command = string(exePath), args = ["-o=" & string(outPath), "--header=" & header], options = {poEchoCmd})
     if outp.len == 0:
       echo "Warning: no output from ", i
     else:
