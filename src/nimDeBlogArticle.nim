@@ -64,6 +64,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
       if l == lang:
         continue
       html.add &"<a href=\"{filename}.{l}.html\">{langToNativeName[l]}</a> "
+    html.add "<br>\n"
     renderRstToOut(gen, rstNode, html)
     html.add "</body>"
 
