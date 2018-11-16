@@ -24,19 +24,19 @@ Nim De Blog
 Footer of index page
 """
 
-  let html = makeIndexPages(
-                            articlesInfo,
-                            """【
-                               【ja:Nim De Blog サンプル】
-                               【en:Nim De Blog sample】
-                               】""",
-                            """【
-                               【ja:Nim De BlogはNim言語を使った静的サイトジェネレータです。】
-                               【en:Nim De Blog is a static site generater that uses Nim programming language.】
-                               】""",
-                            rstSrcHead,
-                            rstSrcFoot,
-                            "public")
+  makeIndexPages(
+                  articlesInfo,
+                  """【
+                     【ja:Nim De Blog サンプル】
+                     【en:Nim De Blog sample】
+                     】""",
+                  """【
+                     【ja:Nim De BlogはNim言語を使った静的サイトジェネレータです。】
+                     【en:Nim De Blog is a static site generater that uses Nim programming language.】
+                     】""",
+                  rstSrcHead,
+                  rstSrcFoot,
+                  "public")
 
 when isMainModule:
   main()

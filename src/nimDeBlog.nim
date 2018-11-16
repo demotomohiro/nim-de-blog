@@ -72,7 +72,7 @@ proc makeIndexPage*(
 proc makeIndexPages*(
                     articlesInfo: openArray[ArticleInfo];
                     title, description, preIndex, postIndex: string;
-                    indexDir: string): string =
+                    indexDir: string) =
   var langSet: HashSet[Lang]
   langSet.init(2)
   for a in articlesInfo:
