@@ -98,3 +98,8 @@ proc makeIndexPages*(
                             indexDir)
     writeFile(indexDir / fmt"index.{l}.html", html)
 
+proc makeBlog*(
+              articlesSrcDir, articlesDstDir, execDstDir, header: string;
+              title, description, preIndex, postIndex: string) =
+  let articlesInfo = execArticles(articlesSrcDir, articlesDstDir, execDstDir, header)
+  makeIndexPages(articlesInfo, title, description, preIndex, postIndex, articlesDstDir)
