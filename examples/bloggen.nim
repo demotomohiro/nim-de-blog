@@ -3,6 +3,8 @@ import nimDeBlog, localize
 
 proc main =
   let articleHead = """
+$otherLangLinks
+
 【
 【ja:Nim De Blogのサンプル記事】
 【en:Nim De Blog sample article】
