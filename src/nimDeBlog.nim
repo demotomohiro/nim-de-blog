@@ -27,7 +27,10 @@ proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header: string): 
       quit "Fix error!"
 
     let outPath = absArticlesDstDir / outPathRel
-    let outp = execProcess(command = string(exePath), args = ["-o=" & string(outPath), "--header=" & header], options = {poEchoCmd})
+    let outp = execProcess(
+                          command = string(exePath),
+                          args = ["-o=" & string(outPath), "--header=" & header],
+                          options = {poEchoCmd})
     if outp.len == 0:
       echo "Warning: no output from ", i
     else:
