@@ -5,6 +5,11 @@ proc main =
   let articleHead = """
 $otherLangLinks
 
+`【
+【ja:記事一覧へ】
+【en:index】
+】 <$indexPageLink>`_
+
 【
 【ja:Nim De Blogのサンプル記事】
 【en:Nim De Blog sample article】

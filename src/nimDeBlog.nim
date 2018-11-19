@@ -27,9 +27,12 @@ proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header: string): 
       quit "Fix error!"
 
     let outPath = absArticlesDstDir / outPathRel
+    var relativeDstDir = relativeTo(absArticlesDstDir.AbsoluteFile, parentDir(outPath.string).AbsoluteDir).string
+    if relativeDstDir.len == 0:
+      relativeDstDir = $CurDir
     let outp = execProcess(
                           command = string(exePath),
-                          args = ["-o=" & string(outPath), "--header=" & header],
+                          args = ["-o=" & string(outPath), "--header=" & header, "--relativeDstDir=" & relativeDstDir],
                           options = {poEchoCmd})
     if outp.len == 0:
       echo "Warning: no output from ", i

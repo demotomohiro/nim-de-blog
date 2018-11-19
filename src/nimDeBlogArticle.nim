@@ -35,24 +35,27 @@ proc getHtmlHead*(lang: Lang; title, description: string): string =
 """
 
 proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
-  proc processRstText(articleSrc: ArticleSrc; rstText: string; lang: Lang; filename: string): string =
+  proc processRstText(articleSrc: ArticleSrc; rstText: string; lang: Lang; filename, relativeDstDir: string): string =
     let rstTextLocal = localize(rstText, lang)
     var otherLangLinks = ""
     for l in articleSrc.keys:
       if l == lang:
         continue
       otherLangLinks.add &"`{langToNativeName[l]} <{filename}.{l}.html>`_ "
-    rstTextLocal % ["otherLangLinks", otherLangLinks]
+    let indexPageLink = relativeDstDir & "/" & fmt"index.{lang}.html"
+    rstTextLocal % ["otherLangLinks", otherLangLinks, "indexPageLink", indexPageLink]
 
   if articleSrc.len == 0:
     echo "Empty article"
     return
   var path: string
   var header: string
+  var relativeDstDir: string
   for kind, key, val in getopt():
     case key
     of "o": path = val
     of "header": header = val
+    of "relativeDstDir": relativeDstDir = val
     else: assert(false)
   assert path.len != 0
   createDir(parentDir(path))
@@ -63,7 +66,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     let basePath = path & "." & $lang
     initRstGenerator(gen, outHtml, defaultConfig(), basePath & ".rst", {})
 
-    let processedRstText = processRstText(articleSrc, header & "\n\n" & rstText, lang, filename)
+    let processedRstText = processRstText(articleSrc, header & "\n\n" & rstText, lang, filename, relativeDstDir)
     var hasToc:bool
     let rstNode = rstParse(processedRstText, "", 1, 1, hasToc, {})
 
