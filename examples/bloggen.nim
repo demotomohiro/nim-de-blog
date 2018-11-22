@@ -1,5 +1,5 @@
 import os, strformat
-import nimDeBlog, localize
+import nimDeBlog
 
 proc main =
   let articleHead = """
