@@ -1,4 +1,3 @@
-import os, strformat
 import nimDeBlog
 
 proc main =
