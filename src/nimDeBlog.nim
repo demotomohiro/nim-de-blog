@@ -6,7 +6,7 @@ import nimDeBlogArticle, localize
 proc toAbsoluteDir(dir: string): AbsoluteDir =
   toAbsolute(dir, getCurrentDir().AbsoluteDir).AbsoluteDir
 
-proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header: string): ArticlesInfo =
+proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header, footer: string): ArticlesInfo =
   result = @[]
   let absArticlesSrcDir = toAbsoluteDir(articlesSrcDir)
   let absArticlesDstDir = toAbsoluteDir(articlesDstDir)
@@ -32,7 +32,11 @@ proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header: string): 
       relativeDstDir = $CurDir
     let outp = execProcess(
                           command = string(exePath),
-                          args = ["-o=" & string(outPath), "--header=" & header, "--relativeDstDir=" & relativeDstDir],
+                          args = [
+                                  "-o=" & string(outPath),
+                                  "--header=" & header,
+                                  "--footer=" & footer,
+                                  "--relativeDstDir=" & relativeDstDir],
                           options = {poEchoCmd})
     if outp.len == 0:
       echo "Warning: no output from ", i
@@ -105,7 +109,7 @@ proc makeIndexPages*(
     writeFile(indexDir / fmt"index.{l}.html", html)
 
 proc makeBlog*(
-              articlesSrcDir, articlesDstDir, execDstDir, header: string;
+              articlesSrcDir, articlesDstDir, execDstDir, header, footer: string;
               title, description, preIndex, postIndex: string) =
-  let articlesInfo = execArticles(articlesSrcDir, articlesDstDir, execDstDir, header)
+  let articlesInfo = execArticles(articlesSrcDir, articlesDstDir, execDstDir, header, footer)
   makeIndexPages(articlesInfo, title, description, preIndex, postIndex, articlesDstDir)

@@ -14,6 +14,9 @@ $otherLangLinks
 【en:Nim De Blog sample article】
 】
 """
+  let articleFoot = """
+Footer of article page.
+"""
   let rstSrcHead = """
 Nim De Blog
 ======
@@ -33,6 +36,7 @@ Footer of index page
           articlesDstDir  = "public",
           execDstDir      = "bin",
           header          = articleHead,
+          footer          = articleFoot,
           title           = """【
                                【ja:Nim De Blog サンプル】
                                【en:Nim De Blog sample】

@@ -48,13 +48,16 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
   if articleSrc.len == 0:
     echo "Empty article"
     return
-  var path: string
-  var header: string
-  var relativeDstDir: string
+  var
+    path: string
+    header: string
+    footer: string
+    relativeDstDir: string
   for kind, key, val in getopt():
     case key
     of "o": path = val
     of "header": header = val
+    of "footer": footer = val
     of "relativeDstDir": relativeDstDir = val
     else: assert(false)
   assert path.len != 0
@@ -66,7 +69,8 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     let basePath = path & "." & $lang
     initRstGenerator(gen, outHtml, defaultConfig(), basePath & ".rst", {})
 
-    let processedRstText = processRstText(articleSrc, header & "\n\n" & rstText, lang, filename, relativeDstDir)
+    let rstTextFull = header & "\n\n" & rstText & "\n\n" & footer
+    let processedRstText = processRstText(articleSrc, rstTextFull, lang, filename, relativeDstDir)
     var hasToc:bool
     let rstNode = rstParse(processedRstText, "", 1, 1, hasToc, {})
 
