@@ -1,22 +1,31 @@
 import nimDeBlog
 
 proc main =
-  let articleHead = """
-$otherLangLinks
-
+  let indexLink = """
 `【
 【ja:記事一覧へ】
 【en:index】
 】 <$indexPageLink>`_
+"""
+  let articleHead = indexLink & """
+$otherLangLinks
 
 【
 【ja:Nim De Blogのサンプル記事】
 【en:Nim De Blog sample article】
 】
+
+----
 """
   let articleFoot = """
-Footer of article page.
-"""
+----
+
+【
+【ja:記事の下の部分】
+【en:Footer of article page.】
+】
+
+""" & indexLink
   let rstSrcHead = """
 Nim De Blog
 ======
