@@ -14,6 +14,10 @@ const rstText = """
 【en:textabc】
 】
 
+.. raw:: html
+
+   <button>Test raw directive</button>
+
 【
 【ja:最後のタイトル】
 【en:testA last title】

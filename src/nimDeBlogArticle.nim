@@ -72,7 +72,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     let rstTextFull = header & "\n\n" & rstText & "\n\n" & footer
     let processedRstText = processRstText(articleSrc, rstTextFull, lang, filename, relativeDstDir)
     var hasToc:bool
-    let rstNode = rstParse(processedRstText, "", 1, 1, hasToc, {})
+    let rstNode = rstParse(processedRstText, "", 1, 1, hasToc, {roSupportRawDirective})
 
     var html = getHtmlHead(lang, a.title, a.description)
     html.add "<body>\n"
