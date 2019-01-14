@@ -62,7 +62,7 @@ proc makeIndex(
   var gen: RstGenerator
   initRstGenerator(gen, outHtml, defaultConfig(), "", {})
   var hasToc:bool
-  let rstNode = rstParse(rstSrc, "", 1, 1, hasToc, {})
+  let rstNode = rstParse(rstSrc, "", 1, 1, hasToc, {roSupportRawDirective})
   result = ""
   renderRstToOut(gen, rstNode, result)
 
