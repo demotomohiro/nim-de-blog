@@ -6,11 +6,17 @@ import nimDeBlogArticle, localize
 proc toAbsoluteDir(dir: string): AbsoluteDir =
   toAbsolute(dir, getCurrentDir().AbsoluteDir).AbsoluteDir
 
-proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header, footer: string): ArticlesInfo =
+proc toAbsolute(file: string): AbsoluteFile  =
+  toAbsolute(file, getCurrentDir().AbsoluteDir)
+
+proc execArticles*(
+                  articlesSrcDir, articlesDstDir, execDstDir,
+                  header, footer, cssPath: string): ArticlesInfo =
   result = @[]
   let absArticlesSrcDir = toAbsoluteDir(articlesSrcDir)
   let absArticlesDstDir = toAbsoluteDir(articlesDstDir)
   let absExecDstDir = toAbsoluteDir(execDstDir)
+  let absCssPath    = if cssPath.len == 0: "".AbsoluteFile else: toAbsolute(cssPath)
   if not existsDir(absArticlesSrcDir.string):
     raise newException(IOError, absArticlesSrcDir.string & " does not exists")
   for i in walkDirRec(absArticlesSrcDir.string, {pcFile}, {pcDir}):
@@ -30,13 +36,18 @@ proc execArticles*(articlesSrcDir, articlesDstDir, execDstDir, header, footer: s
     var relativeDstDir = relativeTo(absArticlesDstDir.AbsoluteFile, parentDir(outPath.string).AbsoluteDir).string
     if relativeDstDir.len == 0:
       relativeDstDir = $CurDir
+    let relativeCssPath = relativeTo(absCssPath, outPath.string.parentDir.AbsoluteDir).string
+    var args = @[
+                "-o=" & string(outPath),
+                "--header=" & header,
+                "--footer=" & footer,
+                "--relativeDstDir=" & relativeDstDir]
+    if relativeCssPath.len != 0:
+      args.add "--cssPath=" & relativeCssPath
+
     let outp = execProcess(
                           command = string(exePath),
-                          args = [
-                                  "-o=" & string(outPath),
-                                  "--header=" & header,
-                                  "--footer=" & footer,
-                                  "--relativeDstDir=" & relativeDstDir],
+                          args = args,
                           options = {poEchoCmd})
     if outp.len == 0:
       echo "Warning: no output from ", i
@@ -110,6 +121,7 @@ proc makeIndexPages*(
 
 proc makeBlog*(
               articlesSrcDir, articlesDstDir, execDstDir, header, footer: string;
-              title, description, preIndex, postIndex: string) =
-  let articlesInfo = execArticles(articlesSrcDir, articlesDstDir, execDstDir, header, footer)
+              title, description, preIndex, postIndex: string;
+              cssPath: string = "") =
+  let articlesInfo = execArticles(articlesSrcDir, articlesDstDir, execDstDir, header, footer, cssPath)
   makeIndexPages(articlesInfo, title, description, preIndex, postIndex, articlesDstDir)

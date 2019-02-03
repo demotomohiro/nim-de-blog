@@ -55,6 +55,7 @@ Footer of index page
                                【en:Nim De Blog is a static site generater that uses Nim programming language.】
                                】""",
           preIndex        = rstSrcHead,
-          postIndex       = rstSrcFoot)
+          postIndex       = rstSrcFoot,
+          cssPath         = "public/test.css")
 when isMainModule:
   main()
