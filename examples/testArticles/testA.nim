@@ -4,6 +4,9 @@ const rstText = """
 【en:testA article】
 】
 ======
+
+.. contents::
+
 【
 【ja:サブタイトル】
 【en:testA subtitle】
@@ -13,6 +16,42 @@ const rstText = """
 【ja:記事の内容】
 【en:textabc】
 】
+
+【
+【ja:第二章】
+【en:second section】
+】
+------
+
+【
+【ja:サブセクション】
+【en:Sub section】
+】
+.....
+
+【
+【ja:サブセクションのサブセクション】
+【en:Sub section of sub section】
+】
+~~~~~
+
+【
+【ja:第二のサブセクション】
+【en:Second Sub section】
+】
+.....
+
+【
+【ja:Hogeとは】
+【en:Whats is foo】
+】
+~~~~~
+
+【
+【ja:Piyoとは】
+【en:Whats is bar】
+】
+~~~~~
 
 .. raw:: html
 
