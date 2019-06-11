@@ -2,7 +2,7 @@ import strformat, strutils, tables, hashes, marshal, os, parseopt
 import packages/docutils/rst, packages/docutils/rstgen, packages/docutils/rstast
 import localize
 
-export tables.newTable
+export tables.newTable, tables.`[]=`
 export localize.Lang, localize.hash, localize.`==`
 
 type
