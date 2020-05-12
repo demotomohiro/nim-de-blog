@@ -1,4 +1,4 @@
-import marshal, os, osproc, sets, strutils, strformat, tables
+import algorithm, marshal, os, osproc, sequtils, sets, strutils, strformat, tables
 import packages/docutils/rst, packages/docutils/rstgen
 import ../../compiler/pathutils
 import nimDeBlogArticle, localize
@@ -60,13 +60,30 @@ proc makeIndex(
               preIndex, postIndex: string;
               indexDir: AbsoluteDir): string =
   proc getIndices(articlesInfo: openArray[ArticleInfo]; lang: Lang): string =
-    result = ""
+    var categorySet: HashSet[string]
+
     for a in articlesInfo:
       if lang notin a:
         continue
-      let al = a[lang]
-      let path = replace(relativeTo(AbsoluteFile(al.path), indexDir).string, '\\', '/')
-      result.add &"- `{al.title} <{path}>`_\n"
+      categorySet.incl a[lang].category
+
+    var categories = toSeq(categorySet)
+    categories.sort()
+
+    result = ""
+    for c in categories:
+      let indent = if c.len == 0: "" else: "  "
+      if c.len != 0:
+        result.add &"- {c}\n"
+
+      for a in articlesInfo:
+        if lang notin a:
+          continue
+        let al = a[lang]
+        if al.category != c:
+          continue
+        let path = replace(relativeTo(AbsoluteFile(al.path), indexDir).string, '\\', '/')
+        result.add indent & &"- `{al.title} <{path}>`_\n"
 
   let rstSrc = preIndex & getIndices(articlesInfo, lang) & postIndex
 

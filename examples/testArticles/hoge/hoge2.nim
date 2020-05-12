@@ -1,25 +1,25 @@
 const rstText = """
 【
-【ja:ほげぴよ】
-【en:Foo Bar】
+【ja:ほげ2】
+【en:Foo Bar2】
 】
 ======
 【
-【ja:ほげぴよ文章】
-【en:foo bar content】
+【ja:ほげ2について】
+【en:foo bar2】
 】
 """
 
 let article = newTable([
   (Lang("en"),
   ArticleSrcLocal(
-    title:"foo bar Title",
+    title:"foo bar2",
     description:"Test foo doc",
     category:"Hoge")),
   (Lang("ja"),
   ArticleSrcLocal(
-    title:"Hoge hogeタイトル",
-    description:"ホゲホゲ",
+    title:"Hoge2タイトル",
+    description:"ホゲホゲ2",
     category:"ホゲ"))])
 newArticle(article, rstText)
 

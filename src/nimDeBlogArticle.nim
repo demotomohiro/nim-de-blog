@@ -9,11 +9,13 @@ type
   ArticleSrcLocal*  = object
     title*:       string
     description*: string
+    category*:    string
   #keys are language code like "en" or "ja"
   ArticleSrc        = TableRef[Lang, ArticleSrcLocal]
   ArticleInfoLocal* = object
     title*:       string
     description*: string
+    category*:    string
     path*:        string
   #keys are language code
   ArticleInfo*  = TableRef[Lang, ArticleInfoLocal]
@@ -160,6 +162,10 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
 
     let htmlPath = basePath & ".html"
     writeFile(htmlPath, html)
-    articleInfo[lang] = ArticleInfoLocal(title:a.title, description:a.description, path:htmlPath)
+    articleInfo[lang] = ArticleInfoLocal(
+                                         title:a.title,
+                                         description:a.description,
+                                         category:a.category,
+                                         path:htmlPath)
 
   echo $$articleInfo
