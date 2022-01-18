@@ -23,14 +23,15 @@ type
 
 proc initArticleInfo(): ArticleInfo = newTable[ArticleInfo.A, ArticleInfo.B](2)
 
-proc gatherHeadlines(n: PRstNode; result: var PRstNode; headlineStack: var seq[PRstNode]; ignore: var bool) =
+proc gatherHeadlines(n: PRstNode; result: var PRstNode; headlineStack: var seq[tuple[section: PRstNode, tocList: PRstNode]]; ignore: var bool) =
   if n == nil or n.kind == rnLeaf:
     return
 
   if n.kind == rnContents:
     ignore = false
-  elif n.kind == rnHeadline and not ignore:
-    while headlineStack.len > 0 and headlineStack[^1].level >= n.level:
+  elif n.kind in {rnHeadline, rnMarkdownHeadline} and not ignore:
+    let addEnumList = headlineStack.len > 0 and headlineStack[^1].section.level < n.level
+    while headlineStack.len > 0 and headlineStack[^1].section.level >= n.level:
       discard headlineStack.pop()
     var nodeLinkText = newRstNode(rnInner)
     nodeLinkText.sons = n.sons
@@ -39,10 +40,9 @@ proc gatherHeadlines(n: PRstNode; result: var PRstNode; headlineStack: var seq[P
     if headlineStack.len == 0:
       add nodeLinkRefLeaf.text, rstnodeToRefname(n)
     else:
-      add nodeLinkRefLeaf.text, rstnodeToRefname(headlineStack[^1])
+      add nodeLinkRefLeaf.text, rstnodeToRefname(headlineStack[^1].section)
       add nodeLinkRefLeaf.text, "-"
       add nodeLinkRefLeaf.text, rstnodeToRefname(n)
-    add headlineStack, n
     var nodeLink = newRstNode(rnHyperlink)
     add nodeLink, nodeLinkText
     var nodeLinkRef = newRstNode(rnInner)
@@ -50,21 +50,28 @@ proc gatherHeadlines(n: PRstNode; result: var PRstNode; headlineStack: var seq[P
     add nodeLink, nodeLinkRef
     var nodeItem = newRstNode(rnEnumItem)
     add nodeItem, nodeLink
-    nodeItem.level = n.level
-    var pn = result
 
-    while pn.sons.len != 0 and pn.sons[^1].level < n.level:
-      var last = pn.sons[^1]
-      assert last.kind == rnEnumItem
-      if last.sons.len == 1:
-        var enumList = newRstNode(rnEnumList)
-        add last, enumList
-        pn = enumList
-        break
-      assert last.sons.len == 2 and last.sons[1].kind == rnEnumList
-      pn = last.sons[1]
+    var pn =
+      if headlineStack.len == 0:
+        result
+      else:
+        headlineStack[^1].tocList
+
+    if addEnumList or result == nil:
+      var enumList = newRstNode(rnEnumList)
+      enumList.labelFmt = "1"
+      if result == nil:
+        result = enumList
+      else:
+        add pn, enumList
+      pn = enumList
+    else:
+      if headlineStack.len != 0:
+        pn = pn.sons[^1]
+      assert pn.kind == rnEnumList
+
     add pn, nodeItem
-
+    add headlineStack, (n, pn)
   else:
     for i in n.sons:
       gatherHeadlines(i, result, headlineStack, ignore)
@@ -90,10 +97,11 @@ proc expandRSTContentsDirective(n: var PRstNode) =
     return
 
   var
-    toc: PRstNode = newRstNode(rnEnumList)
-    headlineStack: seq[PRstNode]
+    toc: PRstNode
+    headlineStack: seq[(PRstNode, PRstNode)]
     ignore: bool = true
   gatherHeadlines(n, toc, headlineStack, ignore)
+  assert toc != nil
   insert nc.sons, toc, i
 
 proc getHtmlHead*(lang: Lang; title, description: string; cssPath: string = ""): string =
@@ -145,15 +153,14 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
   let articleInfo = initArticleInfo()
   let filename = extractFilename(path)
   for lang, a in articleSrc.pairs:
-    var gen: RstGenerator
-    let basePath = path & "." & $lang
-    initRstGenerator(gen, outHtml, defaultConfig(), basePath & ".rst", {})
-
     let rstTextFull = header & "\n\n" & rstText & "\n\n" & footer
     let processedRstText = processRstText(articleSrc, rstTextFull, lang, filename, relativeDstDir)
-    var hasToc:bool
-    var rstNode = rstParse(processedRstText, "", 1, 1, hasToc, {roSupportRawDirective})
+    var (rstNode, filenames, _) = rstParse(processedRstText, "", 1, 1, {roSupportMarkdown, roSupportRawDirective})
     expandRSTContentsDirective(rstNode)
+
+    var gen: RstGenerator
+    let basePath = path & "." & $lang
+    initRstGenerator(gen, outHtml, defaultConfig(), basePath & ".rst", filenames = filenames)
 
     var html = getHtmlHead(lang, a.title, a.description, cssPath)
     html.add "<body>\n"

@@ -27,13 +27,13 @@ $otherLangLinks
 
 """ & indexLink
   let rstSrcHead = """
-Nim De Blog
-======
-【
+# Nim De Blog
+
+## 【
 【ja:記事一覧】
-【en:Artile list】
+【en:Article list】
 】
-------
+
 """
 
   let rstSrcFoot = """

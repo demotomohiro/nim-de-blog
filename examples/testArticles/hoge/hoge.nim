@@ -1,9 +1,9 @@
 const rstText = """
-【
+# 【
 【ja:ほげぴよ】
 【en:Foo Bar】
 】
-======
+
 【
 【ja:ほげぴよ文章】
 【en:foo bar content】
