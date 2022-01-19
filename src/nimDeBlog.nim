@@ -1,4 +1,4 @@
-import algorithm, marshal, os, osproc, sequtils, sets, strutils, strformat, tables
+import std/[algorithm, marshal, os, osproc, sequtils, sets, strutils, strformat, tables, streams]
 import packages/docutils/rst, packages/docutils/rstgen
 import ../../compiler/pathutils
 import nimDeBlogArticle, localize
@@ -45,14 +45,24 @@ proc execArticles*(
     if relativeCssPath.len != 0:
       args.add "--cssPath=" & relativeCssPath
 
-    let outp = execProcess(
-                          command = string(exePath),
-                          args = args,
-                          options = {poEchoCmd})
+    var
+      p = startProcess(command = string(exePath),
+                       args = args,
+                       options = {poEchoCmd})
+      outStrm = p.outputStream()
+
+    let outp = outStrm.readAll
     if outp.len == 0:
-      echo "Warning: no output from ", i
+      echo "Error: no output from ", i
+      let err = p.errorStream().readAll
+      echo err
     else:
       result.add to[ArticleInfo](outp)
+
+    if p.waitForExit != 0:
+      quit "Failed to run " & i
+
+    p.close
 
 proc makeIndex(
               articlesInfo: openArray[ArticleInfo];
