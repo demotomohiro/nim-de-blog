@@ -51,11 +51,11 @@ proc execArticles*(
                        options = {poEchoCmd})
       outStrm = p.outputStream()
 
+    let err = p.errorStream().readAll
+    stderr.write err
     let outp = outStrm.readAll
     if outp.len == 0:
       echo "Error: no output from ", i
-      let err = p.errorStream().readAll
-      echo err
     else:
       result.add to[ArticleInfo](outp)
 

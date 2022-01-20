@@ -131,6 +131,15 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
     let indexPageLink = relativeDstDir & "/" & fmt"index.{lang}.html"
     rstTextLocal % ["otherLangLinks", otherLangLinks, "indexPageLink", indexPageLink]
 
+  proc rstParseMsgHandler(filename: string, line, col: int, msgkind: MsgKind,
+                          arg: string) =
+    let
+      mc = msgkind.whichMsgClass
+      a = $msgkind % arg
+      message = &"rstParse {$mc} in line {line}: {a}"
+
+    stderr.writeLine message
+
   if articleSrc.len == 0:
     echo "Empty article"
     return
@@ -155,7 +164,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
   for lang, a in articleSrc.pairs:
     let rstTextFull = header & "\n\n" & rstText & "\n\n" & footer
     let processedRstText = processRstText(articleSrc, rstTextFull, lang, filename, relativeDstDir)
-    var (rstNode, filenames, _) = rstParse(processedRstText, "", 1, 1, {roSupportMarkdown, roSupportRawDirective})
+    var (rstNode, filenames, _) = rstParse(processedRstText, "", 1, 1, {roSupportMarkdown, roSupportRawDirective}, nil, rstParseMsgHandler)
     expandRSTContentsDirective(rstNode)
 
     var gen: RstGenerator
