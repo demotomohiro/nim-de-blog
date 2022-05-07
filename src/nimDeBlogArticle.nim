@@ -164,7 +164,13 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
   for lang, a in articleSrc.pairs:
     let rstTextFull = header & "\n\n" & rstText & "\n\n" & footer
     let processedRstText = processRstText(articleSrc, rstTextFull, lang, filename, relativeDstDir)
-    var (rstNode, filenames, _) = rstParse(processedRstText, "", 1, 1, {roSupportMarkdown, roSupportRawDirective}, nil, rstParseMsgHandler)
+    var (rstNode, filenames, _) = rstParse(processedRstText,
+                                           "",
+                                           1,
+                                           1,
+                                           {roSupportMarkdown, roSupportRawDirective, roSandboxDisabled},
+                                           nil,
+                                           rstParseMsgHandler)
     expandRSTContentsDirective(rstNode)
 
     var gen: RstGenerator

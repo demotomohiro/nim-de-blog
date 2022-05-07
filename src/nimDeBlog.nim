@@ -97,7 +97,7 @@ proc makeIndex(
 
   let rstSrc = preIndex & getIndices(articlesInfo, lang) & postIndex
 
-  let (rstNode, filenames, _) = rstParse(rstSrc, "", 1, 1, {roSupportMarkdown, roSupportRawDirective})
+  let (rstNode, filenames, _) = rstParse(rstSrc, "", 1, 1, {roSupportMarkdown, roSupportRawDirective, roSandboxDisabled})
   var gen: RstGenerator
   initRstGenerator(gen, outHtml, defaultConfig(), "", filenames = filenames)
   result = ""
