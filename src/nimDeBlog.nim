@@ -17,7 +17,7 @@ proc execArticles*(
   let absArticlesDstDir = toAbsoluteDir(articlesDstDir)
   let absExecDstDir = toAbsoluteDir(execDstDir)
   let absCssPath    = if cssPath.len == 0: "".AbsoluteFile else: toAbsolute(cssPath)
-  if not existsDir(absArticlesSrcDir.string):
+  if not dirExists(absArticlesSrcDir.string):
     raise newException(IOError, absArticlesSrcDir.string & " does not exists")
   for i in walkDirRec(absArticlesSrcDir.string, {pcFile}, {pcDir}):
     let path = splitFile(i)
