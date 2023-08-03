@@ -170,6 +170,7 @@ proc newArticle*(articleSrc: ArticleSrc; rstText: string) =
                                            1,
                                            {roSupportMarkdown, roSupportRawDirective, roSandboxDisabled},
                                            nil,
+                                           nil,
                                            rstParseMsgHandler)
     expandRSTContentsDirective(rstNode)
 

@@ -1,6 +1,6 @@
 import std/[algorithm, marshal, os, osproc, sequtils, sets, strutils, strformat, tables, streams]
 import packages/docutils/rst, packages/docutils/rstgen
-import ../../compiler/pathutils
+import "$nim"/compiler/pathutils
 import nimDeBlogArticle, localize
 
 proc toAbsoluteDir(dir: string): AbsoluteDir =
