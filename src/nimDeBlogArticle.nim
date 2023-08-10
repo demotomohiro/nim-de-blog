@@ -36,13 +36,7 @@ proc gatherHeadlines(n: PRstNode; result: var PRstNode; headlineStack: var seq[t
     var nodeLinkText = newRstNode(rnInner)
     nodeLinkText.sons = n.sons
     var nodeLinkRefLeaf = newRstNode(rnLeaf)
-    nodeLinkRefLeaf.text = "#"
-    if headlineStack.len == 0:
-      add nodeLinkRefLeaf.text, rstnodeToRefname(n)
-    else:
-      add nodeLinkRefLeaf.text, rstnodeToRefname(headlineStack[^1].section)
-      add nodeLinkRefLeaf.text, "-"
-      add nodeLinkRefLeaf.text, rstnodeToRefname(n)
+    nodeLinkRefLeaf.text = "#" & n.anchor
     var nodeLink = newRstNode(rnHyperlink)
     add nodeLink, nodeLinkText
     var nodeLinkRef = newRstNode(rnInner)
